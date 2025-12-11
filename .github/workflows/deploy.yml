@@ -36,6 +36,9 @@ jobs:
           GITHUB_PAGES_BASE: game-hub
         run: npm run build
 
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v4
+
       - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
