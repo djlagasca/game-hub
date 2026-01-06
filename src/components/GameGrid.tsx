@@ -181,8 +181,10 @@ const GameGrid = ({ genreSlug, searchQuery }: GameGridProps) => {
       const nextBatch = games.filter((game) => !existingIds.has(game.id));
       return [...prev, ...nextBatch];
     });
-    if (games.length < DEFAULT_PAGE_SIZE) {
+    if (games.length === 0) {
       setHasMore(false);
+    } else {
+      setHasMore(true);
     }
   }, [games, isLoading, page]);
 
