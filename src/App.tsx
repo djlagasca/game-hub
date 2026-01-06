@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Box, Grid, GridItem, Heading, Text, VStack } from "@chakra-ui/react";
+import { Box, Grid, GridItem, useBreakpointValue } from "@chakra-ui/react";
 import NavBar from "./components/NavBar";
 import GenreList from "./components/GenreList";
 import GameGrid from "./components/GameGrid";
@@ -15,6 +15,7 @@ function App() {
   const [isNavSolid, setIsNavSolid] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const scrollTimeoutRef = useRef<number | null>(null);
+  const asideStickyTop = useBreakpointValue({ base: undefined, md: "96px" });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,25 +94,27 @@ function App() {
           p={{ base: 4, md: 6 }}
           display={{ base: "none", md: "block" }}
         >
-          <GenreList
-            selectedGenreId={selectedGenre?.id}
-            onSelect={handleGenreSelect}
-          />
+          <Box
+            position="sticky"
+            top={asideStickyTop}
+            maxH="calc(100vh - 96px)"
+            overflowY="auto"
+            pr={2}
+            css={{
+              "&::-webkit-scrollbar": { width: "0px", height: "0px" },
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
+          >
+            <GenreList
+              selectedGenreId={selectedGenre?.id}
+              onSelect={handleGenreSelect}
+            />
+          </Box>
         </GridItem>
 
         <GridItem area="main" p={{ base: 4, md: 8 }}>
-          <VStack align="stretch" gap={8}>
-            <VStack align="flex-start" gap={2}>
-              <Heading size="lg">Featured Releases</Heading>
-              <Text color="gray.600">
-                Live highlights from RAWG&apos;s catalog, refreshed each visit.
-              </Text>
-            </VStack>
-            <GameGrid
-              genreSlug={selectedGenre?.slug}
-              searchQuery={searchQuery}
-            />
-          </VStack>
+          <GameGrid genreSlug={selectedGenre?.slug} searchQuery={searchQuery} />
         </GridItem>
       </Grid>
     </Box>

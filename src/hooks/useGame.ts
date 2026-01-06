@@ -21,13 +21,15 @@ interface GamesResponse {
     results: RawgGame[];
 }
 
-export const DEFAULT_PAGE_SIZE = 12;
+export const DEFAULT_PAGE_SIZE = 10;
 
 interface UseGameOptions {
   pageSize?: number;
   genreSlug?: string;
   searchQuery?: string;
   platformId?: number | null;
+  page?: number;
+  ordering?: string;
 }
 
 const useGame = ({
@@ -35,6 +37,8 @@ const useGame = ({
   genreSlug,
   searchQuery,
   platformId,
+  page = 1,
+  ordering,
 }: UseGameOptions = {}) => {
   const [games, setGames] = useState<RawgGame[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,11 +50,14 @@ const useGame = ({
     setIsLoading(true);
     setError(null);
 
+    const orderingParam = ordering?.trim() ? ordering : undefined;
+
     apiClient
       .get<GamesResponse>("/games", {
         params: {
-          ordering: "-metacritic",
+          ordering: orderingParam ?? "-metacritic",
           page_size: pageSize,
+          page,
           genres: genreSlug,
           search: searchQuery,
           parent_platforms: platformId ?? undefined,
@@ -71,7 +78,7 @@ const useGame = ({
       });
 
     return () => controller.abort();
-  }, [pageSize, genreSlug, searchQuery, platformId]);
+  }, [pageSize, page, genreSlug, searchQuery, platformId, ordering]);
 
   return { games, isLoading, error };
 };
