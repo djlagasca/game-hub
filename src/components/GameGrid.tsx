@@ -214,7 +214,10 @@ const GameGrid = ({ genreSlug, genreName, searchQuery }: GameGridProps) => {
   const filterShadow = useColorModeValue("sm", "md");
   const filterStickyTop =
     useBreakpointValue({ base: "64px", md: "72px" }) ?? "64px";
-  const headingText = genreName?.trim() ? genreName : "Games";
+  const hasSelectedGenre = Boolean(genreName?.trim());
+  const headingText = hasSelectedGenre
+    ? `${genreName?.trim()} Games`
+    : "Games";
   const stickyBg = hasScrolled ? filterBg : "transparent";
   const stickyShadow = hasScrolled ? filterShadow : "none";
 
