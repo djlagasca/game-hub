@@ -226,28 +226,32 @@ const GameGrid = ({ genreSlug, searchQuery }: GameGridProps) => {
         <Stack
           gap={{ base: 3, md: 4 }}
           direction={{ base: "column", md: "row" }}
-          align={{ base: "stretch", md: "center" }}
-          justify="space-between"
+          align="flex-start"
+          justify="flex-start"
         >
-          <Stack gap={3} direction={{ base: "column", md: "row" }} flex="1">
+          <Stack gap={3} direction={{ base: "column", md: "row" }}>
             <PlatformFilter
               selectedPlatform={selectedPlatform}
               onSelect={setSelectedPlatform}
               platforms={platforms}
               isDisabled={arePlatformsLoading || !!platformError}
             />
+          </Stack>
+          <Stack direction="row" gap={3} align="center" justify="flex-start">
+            <SortSelector ordering={ordering} onChange={setOrdering} />
             {selectedPlatform && (
               <Button
                 variant="ghost"
                 size="sm"
-                alignSelf={{ base: "flex-start", md: "center" }}
-                onClick={() => setSelectedPlatform(null)}
+                onClick={() => {
+                  setSelectedPlatform(null);
+                  setOrdering("");
+                }}
               >
                 Clear platform filter
               </Button>
             )}
           </Stack>
-          <SortSelector ordering={ordering} onChange={setOrdering} />
         </Stack>
       </Box>
 
