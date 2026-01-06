@@ -189,7 +189,6 @@ const GameGrid = ({ genreSlug, searchQuery }: GameGridProps) => {
   }, [games, isLoading, page]);
 
   useEffect(() => {
-    if (selectedPlatform) return;
     const sentinel = loadMoreRef.current;
     if (!sentinel) return;
 
@@ -303,21 +302,19 @@ const GameGrid = ({ genreSlug, searchQuery }: GameGridProps) => {
             ))}
       </SimpleGrid>
 
-      {!selectedPlatform && (
-        <Box
-          ref={loadMoreRef}
-          w="full"
-          py={4}
-          textAlign="center"
-          color="gray.500"
-        >
-          {isLoading && page > 1
-            ? "Loading more games..."
-            : hasMore
-            ? "Scroll to load more releases"
-            : "You’ve reached the end of the feed."}
-        </Box>
-      )}
+      <Box
+        ref={loadMoreRef}
+        w="full"
+        py={4}
+        textAlign="center"
+        color="gray.500"
+      >
+        {isLoading && page > 1
+          ? "Loading more games..."
+          : hasMore
+          ? "Scroll to load more releases"
+          : "You’ve reached the end of the feed."}
+      </Box>
     </Stack>
   );
 };
