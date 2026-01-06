@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Heading,
   SimpleGrid,
   Stack,
   Text,
@@ -29,6 +30,7 @@ const pulse = keyframes`
 
 interface GameGridProps {
   genreSlug?: string;
+  genreName?: string;
   searchQuery?: string;
 }
 
@@ -130,10 +132,11 @@ const SortSelector = ({ ordering, onChange }: SortSelectorProps) => (
   </Stack>
 );
 
-const GameGrid = ({ genreSlug, searchQuery }: GameGridProps) => {
+const GameGrid = ({ genreSlug, genreName, searchQuery }: GameGridProps) => {
   const [selectedPlatform, setSelectedPlatform] =
     useState<RawgParentPlatform | null>(null);
   const [ordering, setOrdering] = useState("");
+  const [hasScrolled, setHasScrolled] = useState(false);
   const [page, setPage] = useState(1);
   const [displayedGames, setDisplayedGames] = useState<RawgGame[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -211,21 +214,45 @@ const GameGrid = ({ genreSlug, searchQuery }: GameGridProps) => {
   const filterShadow = useColorModeValue("sm", "md");
   const filterStickyTop =
     useBreakpointValue({ base: "64px", md: "72px" }) ?? "64px";
+  const headingText = genreName?.trim() ? genreName : "Games";
+  const stickyBg = hasScrolled ? filterBg : "transparent";
+  const stickyShadow = hasScrolled ? filterShadow : "none";
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setHasScrolled(window.scrollY > 0);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <Stack gap={6}>
       <Box
         position="sticky"
         top={filterStickyTop}
-        zIndex={5}
-        bg={filterBg}
-        boxShadow={filterShadow}
+        zIndex={6}
+        bg={stickyBg}
+        boxShadow={stickyShadow}
         borderRadius="xl"
-        py={3}
-        px={{ base: 3, md: 4 }}
+        py={4}
+        px={{ base: 4, md: 6 }}
+        display="flex"
+        flexDir="column"
+        gap={10}
       >
+        <Heading
+          fontSize={{ base: "5xl", md: "6xl" }}
+          fontWeight="extrabold"
+          letterSpacing="-0.02em"
+        >
+          {headingText}
+        </Heading>
+
         <Stack
-          gap={{ base: 3, md: 4 }}
+          gap={{ base: 6, md: 4 }}
           direction={{ base: "column", md: "row" }}
           align="flex-start"
           justify="flex-start"

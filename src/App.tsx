@@ -114,7 +114,11 @@ function App() {
         </GridItem>
 
         <GridItem area="main" p={{ base: 4, md: 8 }}>
-          <GameGrid genreSlug={selectedGenre?.slug} searchQuery={searchQuery} />
+          <GameGrid
+            genreSlug={selectedGenre?.slug}
+            genreName={selectedGenre?.name}
+            searchQuery={searchQuery}
+          />
         </GridItem>
       </Grid>
     </Box>
