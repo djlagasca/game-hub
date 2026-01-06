@@ -32,7 +32,6 @@ interface GameGridProps {
   genreSlug?: string;
   genreName?: string;
   searchQuery?: string;
-  stickyTopOffset?: string;
 }
 
 const PlatformSelect = chakra("select");
@@ -133,16 +132,10 @@ const SortSelector = ({ ordering, onChange }: SortSelectorProps) => (
   </Stack>
 );
 
-const GameGrid = ({
-  genreSlug,
-  genreName,
-  searchQuery,
-  stickyTopOffset,
-}: GameGridProps) => {
+const GameGrid = ({ genreSlug, genreName, searchQuery }: GameGridProps) => {
   const [selectedPlatform, setSelectedPlatform] =
     useState<RawgParentPlatform | null>(null);
   const [ordering, setOrdering] = useState("");
-  const [hasScrolled, setHasScrolled] = useState(false);
   const [page, setPage] = useState(1);
   const [displayedGames, setDisplayedGames] = useState<RawgGame[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -181,11 +174,6 @@ const GameGrid = ({
   }, [genreSlug, searchQuery, selectedPlatform, ordering]);
 
   useEffect(() => {
-    setHasScrolled(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [genreSlug, genreName]);
-
-  useEffect(() => {
     if (isLoading) return;
     setDisplayedGames((prev) => {
       if (page === 1) {
@@ -221,36 +209,19 @@ const GameGrid = ({
     return () => observer.disconnect();
   }, [selectedPlatform, isLoading, hasMore]);
 
-  const filterBg = useColorModeValue("white", "gray.900");
-  const filterShadow = useColorModeValue("sm", "md");
-  const filterStickyTop =
-    stickyTopOffset ??
-    useBreakpointValue({ base: "64px", md: "72px" }) ??
-    "64px";
   const hasSelectedGenre = Boolean(genreName?.trim());
   const headingText = hasSelectedGenre ? `${genreName?.trim()} Games` : "Games";
-  const stickyBg = hasScrolled ? filterBg : "transparent";
-  const stickyShadow = hasScrolled ? filterShadow : "none";
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setHasScrolled(window.scrollY > 0);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const stickyBg = "transparent";
+  const stickyShadow = "none";
 
   return (
     <Stack gap={6}>
       <Box
-        position="sticky"
-        top={filterStickyTop}
-        zIndex={6}
         bg={stickyBg}
         boxShadow={stickyShadow}
         borderRadius="xl"
+        borderTopLeftRadius={0}
+        borderTopRightRadius={0}
         py={4}
         px={{ base: 4, md: 6 }}
         display="flex"
