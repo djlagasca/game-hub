@@ -59,7 +59,7 @@ const GenreList = ({ selectedGenreId, onSelect }: GenreListProps) => {
       >
         {isLoading
           ? Array.from({ length: 6 }).map((_, index) => (
-              <List.Item key={index} m={0}>
+              <List.Item key={index} m={0} py={1}>
                 <Skeleton height="64px" borderRadius="lg" />
               </List.Item>
             ))
