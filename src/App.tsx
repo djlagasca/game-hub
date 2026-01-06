@@ -16,6 +16,11 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const scrollTimeoutRef = useRef<number | null>(null);
   const asideStickyTop = useBreakpointValue({ base: undefined, md: "96px" });
+  const fallbackStickyTop = useBreakpointValue({ base: 120, md: 140 }) ?? 120;
+  const navRef = useRef<HTMLDivElement | null>(null);
+  const [navHeight, setNavHeight] = useState(0);
+  const mainStickyTop =
+    navHeight > 0 ? `${navHeight}px` : `${fallbackStickyTop}px`;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,6 +45,23 @@ function App() {
       if (scrollTimeoutRef.current) {
         window.clearTimeout(scrollTimeoutRef.current);
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const navElement = navRef.current;
+    if (!navElement) return;
+
+    const updateHeight = () => {
+      setNavHeight(Math.ceil(navElement.getBoundingClientRect().height));
+    };
+
+    updateHeight();
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(navElement);
+
+    return () => {
+      resizeObserver.disconnect();
     };
   }, []);
 
@@ -81,7 +103,7 @@ function App() {
         templateColumns={{ base: "1fr", md: "260px 1fr" }}
         templateRows={{ base: "auto 1fr", md: "auto 1fr" }}
       >
-        <GridItem area="nav" position="sticky" top={0} zIndex={20}>
+        <GridItem area="nav" position="sticky" top={0} zIndex={20} ref={navRef}>
           <NavBar
             isSolid={isNavSolid}
             searchQuery={searchQuery}
@@ -113,11 +135,17 @@ function App() {
           </Box>
         </GridItem>
 
-        <GridItem area="main" p={{ base: 4, md: 8 }}>
+        <GridItem
+          area="main"
+          pt={0}
+          px={{ base: 4, md: 8 }}
+          pb={{ base: 4, md: 8 }}
+        >
           <GameGrid
             genreSlug={selectedGenre?.slug}
             genreName={selectedGenre?.name}
             searchQuery={searchQuery}
+            stickyTopOffset={mainStickyTop}
           />
         </GridItem>
       </Grid>

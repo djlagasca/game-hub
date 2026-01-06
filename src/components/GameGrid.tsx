@@ -32,6 +32,7 @@ interface GameGridProps {
   genreSlug?: string;
   genreName?: string;
   searchQuery?: string;
+  stickyTopOffset?: string;
 }
 
 const PlatformSelect = chakra("select");
@@ -132,7 +133,12 @@ const SortSelector = ({ ordering, onChange }: SortSelectorProps) => (
   </Stack>
 );
 
-const GameGrid = ({ genreSlug, genreName, searchQuery }: GameGridProps) => {
+const GameGrid = ({
+  genreSlug,
+  genreName,
+  searchQuery,
+  stickyTopOffset,
+}: GameGridProps) => {
   const [selectedPlatform, setSelectedPlatform] =
     useState<RawgParentPlatform | null>(null);
   const [ordering, setOrdering] = useState("");
@@ -213,11 +219,11 @@ const GameGrid = ({ genreSlug, genreName, searchQuery }: GameGridProps) => {
   const filterBg = useColorModeValue("white", "gray.900");
   const filterShadow = useColorModeValue("sm", "md");
   const filterStickyTop =
-    useBreakpointValue({ base: "64px", md: "72px" }) ?? "64px";
+    stickyTopOffset ??
+    useBreakpointValue({ base: "64px", md: "72px" }) ??
+    "64px";
   const hasSelectedGenre = Boolean(genreName?.trim());
-  const headingText = hasSelectedGenre
-    ? `${genreName?.trim()} Games`
-    : "Games";
+  const headingText = hasSelectedGenre ? `${genreName?.trim()} Games` : "Games";
   const stickyBg = hasScrolled ? filterBg : "transparent";
   const stickyShadow = hasScrolled ? filterShadow : "none";
 
