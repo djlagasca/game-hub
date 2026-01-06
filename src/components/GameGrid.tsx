@@ -37,13 +37,16 @@ const PlatformSelect = chakra("select");
 interface PlatformFilterProps {
   selectedPlatform: RawgParentPlatform | null;
   onSelect: (platform: RawgParentPlatform | null) => void;
+  platforms: RawgParentPlatform[];
+  isDisabled?: boolean;
 }
 
 const PlatformFilter = ({
   selectedPlatform,
   onSelect,
+  platforms,
+  isDisabled = false,
 }: PlatformFilterProps) => {
-  const { platforms, isLoading, error } = usePlatforms();
   const selectValue = selectedPlatform?.id.toString() ?? "";
   const selectBg = useColorModeValue("white", "gray.900");
   const selectBorder = useColorModeValue("gray.200", "gray.700");
@@ -60,7 +63,7 @@ const PlatformFilter = ({
       <PlatformSelect
         value={selectValue}
         onChange={handleChange}
-        disabled={!!error || isLoading}
+        disabled={isDisabled}
         bg={selectBg}
         borderColor={selectBorder}
         borderRadius="lg"
@@ -79,16 +82,6 @@ const PlatformFilter = ({
           </option>
         ))}
       </PlatformSelect>
-      {isLoading && (
-        <Text color="gray.500" fontSize="sm">
-          Loading platform list...
-        </Text>
-      )}
-      {error && (
-        <Text color="red.500" fontSize="sm">
-          {error}
-        </Text>
-      )}
     </Stack>
   );
 };
@@ -145,6 +138,11 @@ const GameGrid = ({ genreSlug, searchQuery }: GameGridProps) => {
   const [displayedGames, setDisplayedGames] = useState<RawgGame[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const {
+    platforms,
+    isLoading: arePlatformsLoading,
+    error: platformError,
+  } = usePlatforms();
   const { games, isLoading, error } = useGame({
     genreSlug,
     searchQuery,
@@ -235,6 +233,8 @@ const GameGrid = ({ genreSlug, searchQuery }: GameGridProps) => {
             <PlatformFilter
               selectedPlatform={selectedPlatform}
               onSelect={setSelectedPlatform}
+              platforms={platforms}
+              isDisabled={arePlatformsLoading || !!platformError}
             />
             {selectedPlatform && (
               <Button
@@ -250,6 +250,17 @@ const GameGrid = ({ genreSlug, searchQuery }: GameGridProps) => {
           <SortSelector ordering={ordering} onChange={setOrdering} />
         </Stack>
       </Box>
+
+      {arePlatformsLoading && (
+        <Text color="gray.500" fontSize="sm">
+          Loading platform list...
+        </Text>
+      )}
+      {platformError && (
+        <Text color="red.500" fontSize="sm">
+          {platformError}
+        </Text>
+      )}
 
       {error && (
         <Box
