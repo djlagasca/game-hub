@@ -46,7 +46,7 @@ const NavBar = ({
           <Image
             src={logoUrl}
             alt="Game Hub logo"
-            boxSize="40px"
+            boxSize="80px"
             borderRadius="full"
             objectFit="cover"
           />
