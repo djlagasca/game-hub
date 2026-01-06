@@ -18,15 +18,11 @@ interface GenreListProps {
 
 const GenreList = ({ selectedGenreId, onSelect }: GenreListProps) => {
   const { genres, isLoading, error } = useGenres();
-  const itemBg = useColorModeValue("white", "gray.900");
+  const itemBg = "transparent";
   const itemHover = useColorModeValue("gray.50", "gray.800");
   const imageBorder = useColorModeValue("gray.200", "whiteAlpha.200");
-  const fallbackSwatch = useColorModeValue(
-    "linear-gradient(135deg, rgba(236,240,243,0.9), rgba(207,213,222,0.9))",
-    "linear-gradient(135deg, rgba(45,56,72,0.95), rgba(26,32,44,0.95))"
-  );
+  const fallbackSwatch = "transparent";
   const textColor = useColorModeValue("gray.800", "gray.100");
-  const subTextColor = useColorModeValue("gray.500", "gray.400");
 
   if (error)
     return (
@@ -57,7 +53,7 @@ const GenreList = ({ selectedGenreId, onSelect }: GenreListProps) => {
       <List.Root
         display="flex"
         flexDir="column"
-        gap={3}
+        gap={0}
         m={0}
         listStyleType="none"
       >
@@ -93,22 +89,12 @@ const GenreList = ({ selectedGenreId, onSelect }: GenreListProps) => {
                     cursor="pointer"
                     _hover={{ transform: "scale(1.01)", bg: itemHover }}
                   >
-                    <HStack
-                      position="relative"
-                      zIndex={1}
-                      px={3}
-                      py={2}
-                      justify="flex-start"
-                      align="center"
-                      gap={4}
-                    >
+                    <HStack gap={3} align="center" w="full">
                       <Box
-                        w="56px"
-                        h="56px"
+                        w="48px"
+                        h="48px"
                         borderRadius="lg"
                         overflow="hidden"
-                        flexShrink={0}
-                        bg="gray.700"
                         borderWidth="1px"
                         borderColor={imageBorder}
                       >
@@ -133,11 +119,6 @@ const GenreList = ({ selectedGenreId, onSelect }: GenreListProps) => {
                         <Text fontWeight="semibold" color={textColor}>
                           {genre.name}
                         </Text>
-                        {genre.games_count && (
-                          <Text fontSize="sm" color={subTextColor}>
-                            {genre.games_count.toLocaleString()} games
-                          </Text>
-                        )}
                       </VStack>
                     </HStack>
                   </Box>
