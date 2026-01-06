@@ -181,6 +181,11 @@ const GameGrid = ({
   }, [genreSlug, searchQuery, selectedPlatform, ordering]);
 
   useEffect(() => {
+    setHasScrolled(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [genreSlug, genreName]);
+
+  useEffect(() => {
     if (isLoading) return;
     setDisplayedGames((prev) => {
       if (page === 1) {
