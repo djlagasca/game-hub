@@ -27,12 +27,14 @@ interface UseGameOptions {
   pageSize?: number;
   genreSlug?: string;
   searchQuery?: string;
+  platformId?: number | null;
 }
 
 const useGame = ({
   pageSize = DEFAULT_PAGE_SIZE,
   genreSlug,
   searchQuery,
+  platformId,
 }: UseGameOptions = {}) => {
   const [games, setGames] = useState<RawgGame[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,6 +53,7 @@ const useGame = ({
           page_size: pageSize,
           genres: genreSlug,
           search: searchQuery,
+          parent_platforms: platformId ?? undefined,
         },
         signal: controller.signal,
       })
@@ -68,7 +71,7 @@ const useGame = ({
       });
 
     return () => controller.abort();
-  }, [pageSize, genreSlug, searchQuery]);
+  }, [pageSize, genreSlug, searchQuery, platformId]);
 
   return { games, isLoading, error };
 };
